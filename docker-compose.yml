@@ -2,16 +2,14 @@ version: '3'
 
 services:
   prometheus:
-    image: bitnami/prometheus:latest
+    image: prom/prometheus:latest
     container_name: prometheus
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
       - 9090:9090
     restart: unless-stopped
     volumes:
-      - /tmp/prometheus:/etc/prometheus
-      - /tmp/prom_data:/prometheus
+      - '/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml'
+      - ./tmp/prom_data:/prometheus
         #entrypoint:
         # - sleep
         # - inf   
@@ -44,5 +42,22 @@ services:
       - '--collector.netclass.ignored-devices=^(veth.*)$$'
     ports:
       - 9100:9100
+
+  cadvisor:
+    image: zcube/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
 volumes:
+  data:
+    driver: local
   prom_data:
