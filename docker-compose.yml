@@ -8,7 +8,7 @@ services:
       - 9090:9090
     restart: unless-stopped
     volumes:
-      - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
 
   grafana:
@@ -28,6 +28,7 @@ services:
     container_name: promtail
     volumes:
       - /var/log:/var/log
+      - ./promtail:/etc/promtail
     command: -config.file=/etc/promtail/config.yml
     restart: unless-stopped
 
